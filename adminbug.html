@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Manager</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+  <div class="max-w-md mx-auto mt-10 p-6 bg-gray-800 rounded-lg shadow">
+    <h1 class="text-2xl font-bold mb-4">🔑 Password Manager</h1>
+
+    <!-- Tambah akun -->
+    <div class="mb-4">
+      <input id="newUser" class="w-full p-2 mb-2 rounded bg-gray-700" placeholder="Username">
+      <input id="newPass" type="password" class="w-full p-2 mb-2 rounded bg-gray-700" placeholder="Password">
+      <button id="addBtn" class="w-full bg-purple-600 p-2 rounded">➕ Tambah Akun</button>
+    </div>
+
+    <h2 class="text-xl mb-2">📋 Daftar Akun</h2>
+    <ul id="userList" class="space-y-2"></ul>
+  </div>
+
+  <script>
+    function loadUsers(){
+      const users = JSON.parse(localStorage.getItem("bugUsers")) || [];
+      const list = document.getElementById("userList");
+      list.innerHTML = "";
+      users.forEach((u,i)=>{
+        const li = document.createElement("li");
+        li.className="flex justify-between items-center bg-gray-700 p-2 rounded";
+        li.innerHTML = `<span>${u.username}</span>
+                        <button onclick="deleteUser(${i})" class="bg-red-500 px-2 py-1 rounded">❌ Delete</button>`;
+        list.appendChild(li);
+      });
+    }
+
+    document.getElementById("addBtn").addEventListener("click", ()=>{
+      const user = document.getElementById("newUser").value.trim();
+      const pass = document.getElementById("newPass").value.trim();
+      if(user && pass){
+        const users = JSON.parse(localStorage.getItem("bugUsers")) || [];
+        users.push({username:user,password:pass});
+        localStorage.setItem("bugUsers", JSON.stringify(users));
+        loadUsers();
+        document.getElementById("newUser").value="";
+        document.getElementById("newPass").value="";
+      } else {
+        alert("Isi username & password!");
+      }
+    });
+
+    function deleteUser(i){
+      const users = JSON.parse(localStorage.getItem("bugUsers")) || [];
+      users.splice(i,1);
+      localStorage.setItem("bugUsers", JSON.stringify(users));
+      loadUsers();
+    }
+
+    loadUsers();
+  </script>
+</body>
+</html>
